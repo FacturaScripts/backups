@@ -1,10 +1,10 @@
 <?php
 /*
  * This file is part of FacturaSctipts
- * Copyright (C) 2014  Gisbel Jose Pena Gomez      gpg841@gmail.com
- * Copyright (C) 2014  Carlos Garcia Gomez         neorazorx@gmail.com
- * Copyright (C) 2014  Francesc Pineda Segarra     shawe.ewahs@gmail.com
- * Copyright (C) 2014  Valentín González           valengon@gmail.com
+ * Copyright (C) 2014      Gisbel Jose Pena Gomez      gpg841@gmail.com
+ * Copyright (C) 2014-2016 Carlos Garcia Gomez         neorazorx@gmail.com
+ * Copyright (C) 2014      Francesc Pineda Segarra     shawe.ewahs@gmail.com
+ * Copyright (C) 2014      Valentín González           valengon@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,15 +28,15 @@ class backup extends fs_controller
 
    public function __construct()
    {
-      parent::__construct(__CLASS__, 'Backups', 'admin', FALSE, TRUE);
-
+      parent::__construct(__CLASS__, 'Backups', 'admin');
+   }
+   
+   protected function private_core()
+   {
       if( strtolower(FS_DB_TYPE) == 'mysql' )
       {
          $this->template = 'backup_mysql';
-
-         //$this->buttons[] = new fs_button('b_backupms', 'Respaldar por Completo la BD', $this->url().'&tipo_backup=todo');
-         //$this->buttons[] = new fs_button('be_backupms', 'Respaldar por Completo Solo la Estructura de la BD', $this->url().'&tipo_backup=estructura');
-
+         
          if( isset($_GET['take_bk']) )
          {
             // Descargar Archivo del Backup

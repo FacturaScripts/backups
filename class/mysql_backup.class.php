@@ -79,7 +79,7 @@ class MySQL_Backup
     if (!$this->connected)
     {
       $host = $this->server . ':' . $this->port;
-      $this->link_id = mysql_connect($host, $this->username, $this->password);
+      $this->link_id = mysqli_connect($host, $this->username, $this->password);
     }
     if ($this->link_id)
     {
@@ -89,16 +89,16 @@ class MySQL_Backup
       }
       elseif ($this->link_id !== -1)
       {
-        $value = mysql_select_db($this->database, $this->link_id);
+        $value = mysqli_select_db($this->link_id, $this->database);
       }
       else
       {
-        $value = mysql_select_db($this->database);
+        $value = mysqli_select_db($this->database);
       }
     }
     if (!$value)
     {
-      $this->error = mysql_error();
+      $this->error = mysqli_connect_error();
     }
     return $value;
   }
@@ -108,15 +108,15 @@ class MySQL_Backup
   {
     if ($this->link_id !== -1)
     {
-      $result = mysql_query($sql, $this->link_id);
+      $result = mysqli_query($this->link_id, $sql);
     }
     else
     {
-      $result = mysql_query($sql);
+      $result = mysqli_query($sql);
     }
     if (!$result)
     {
-      $this->error = mysql_error();
+      $this->error = mysqli_connect_error();
     }
     return $result;
   }
@@ -129,7 +129,7 @@ class MySQL_Backup
     {
       return false;
     }
-    while ($row = mysql_fetch_row($result))
+    while ($row = mysqli_fetch_row($result))
     {
       if (empty($this->tables) || in_array($row[0], $this->tables))
       {
@@ -163,7 +163,7 @@ class MySQL_Backup
     {
       return false;
     }
-    $row = mysql_fetch_assoc($result);
+    $row = mysqli_fetch_assoc($result);
     $value .= str_replace("\n", MSB_NL, $row['Create Table']) . ';';
     $value .= MSB_NL . MSB_NL;
     if (!$this->struct_only)
@@ -189,7 +189,7 @@ class MySQL_Backup
     {
       return false;
     }
-    while ($row = mysql_fetch_row($result))
+    while ($row = mysqli_fetch_row($result))
     {
       $values = '';
       foreach ($row as $data)
@@ -219,7 +219,7 @@ class MySQL_Backup
       $value .= '#' . MSB_NL;
       $value .= '# Servidor: ' . $this->server . MSB_NL;
       $value .= '# Generada el: ' . date('d/m/Y') . ' a las ' . date('H:i:s') . MSB_NL;
-      $value .= '# Versión de MySQL: ' . mysql_get_server_info() . MSB_NL;
+/**   $value .= '# Versión de MySQL: ' . mysqli_get_server_info() . MSB_NL; */ /**NO ENCOTRE EL ERROR */
       $value .= '# Versión de PHP: ' . phpversion() . MSB_NL;
       if (!empty($this->database))
       {
@@ -237,7 +237,7 @@ class MySQL_Backup
     {
       if (!($table_dump = $this->_DumpTable($table)))
       {
-        $this->error = mysql_error();
+        $this->error = mysqli_connect_error();
         return false;
       }
       $value .= $table_dump;
